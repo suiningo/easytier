@@ -1,0 +1,43 @@
+name = "easytier-wss-cf2026"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+WS_PATH = "ws"
+EASYTIER_DISABLE_RELAY = "0"
+LOCATION_HINT = "apac"
+# Set ADMIN_PASSWORD as a Secret in the Cloudflare dashboard (Workers > Settings > Variables)
+# Do NOT commit your real password here.
+# ADMIN_PASSWORD is set via Cloudflare secret; do not commit actual password
+
+[durable_objects]
+bindings = [
+  { name = "RELAY_ROOM", class_name = "RelayRoom" }
+]
+
+# v1: original deployment (AdminStore + RouteHub, already applied on Cloudflare)
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AdminStore", "RouteHub"]
+
+# v2: transition — delete old classes and create RelayRoom in one step
+[[migrations]]
+tag = "v2"
+deleted_classes = ["AdminStore", "RouteHub"]
+new_sqlite_classes = ["RelayRoom"]
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
