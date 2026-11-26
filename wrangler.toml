@@ -16,15 +16,9 @@ bindings = [
   { name = "RELAY_ROOM", class_name = "RelayRoom" }
 ]
 
-# v1: original deployment (AdminStore + RouteHub, already applied on Cloudflare)
-[[migrations]]
-tag = "v1"
-new_sqlite_classes = ["AdminStore", "RouteHub"]
-
-# v2: transition — delete old classes and create RelayRoom in one step
+# 全新部署，只保留 v2，只创建 RelayRoom，不删除任何旧类
 [[migrations]]
 tag = "v2"
-deleted_classes = ["AdminStore", "RouteHub"]
 new_sqlite_classes = ["RelayRoom"]
 
 [observability]
